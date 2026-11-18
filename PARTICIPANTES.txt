@@ -1,0 +1,13 @@
+GLOBAL SOLUTION 2026.2 | Application Development
+FIAP | Ciência da Computação
+Projeto: Ponto Certo SP
+Modalidade: individual
+
+Nome: Matheus Costa Cutrim
+RM: 568087
+Turma: 2CCPR
+Professor: Rodrigo Moraes
+
+Escopo da contribuição individual: concepção do painel de mobilidade,
+interface responsiva em HTML/CSS/JS, integração com a API Olho Vivo,
+ordenação e exibição das previsões, favoritos, testes e documentação.
