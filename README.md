@@ -2,7 +2,7 @@
 
 Aplicativo web para consultar as próximas chegadas de ônibus nos pontos de São Paulo, utilizando dados da API Olho Vivo da SPTrans.
 
-Projeto individual desenvolvido para a **Global Solution 2026.2**, da disciplina **Application Development**, do curso de Ciência da Computação da FIAP.
+Projeto desenvolvido para a **Global Solution 2026.2**, da disciplina **Application Development**, do curso de Ciência da Computação da FIAP.
 
 ## Identificação
 
