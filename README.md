@@ -1,58 +1,310 @@
 # Ponto Certo SP
 
-**Global Solution 2026.2 · Application Development · FIAP**
+Aplicativo web para consultar as próximas chegadas de ônibus nos pontos de São Paulo, utilizando dados da API Olho Vivo da SPTrans.
 
-Matheus Costa Cutrim · RM 568087 · Turma 2CCPR · Professor Rodrigo Moraes  
-Trabalho individual. Veja [PARTICIPANTES.txt](PARTICIPANTES.txt).
+Projeto individual desenvolvido para a **Global Solution 2026.2**, da disciplina **Application Development**, do curso de Ciência da Computação da FIAP.
 
-O Ponto Certo SP ajuda passageiros a decidir quando ir até um ponto de ônibus municipal de São Paulo. A busca distingue pontos com o mesmo nome pelo endereço e pelo código. O painel mostra a linha, o destino e a previsão de cada veículo, com as chegadas mais próximas primeiro. A consulta se renova a cada 30 segundos e também pode ser atualizada manualmente. O filtro de veículos acessíveis usa a indicação da SPTrans. Os pontos salvos ficam no navegador e podem ser consultados novamente sem repetir a busca.
+## Identificação
 
-## Rodar com dados reais
-
-1. Instale o **Node.js 24** e abra um terminal na pasta que contém o `package.json`.
-2. Na [área de desenvolvedores da SPTrans](https://www.sptrans.com.br/desenvolvedores/), cadastre ou acesse sua conta, vá a **Meus Aplicativos** e gere um token para o aplicativo. Aguarde a ativação se necessário.
-3. Copie `.env.example` para `.env` e preencha `SPTRANS_TOKEN` com o token ativo.
-4. Rode `npm start` e abra [localhost:3000](http://localhost:3000). Busque por **Paulista** e selecione um ponto.
-
-O projeto usa recursos nativos do Node.js e funciona sem dependências npm. O arquivo `.env` é ignorado pelo Git. O token é usado apenas no código do servidor.
-
-## Conferir o fluxo localmente
-
-Rode `npm run demo` e abra [localhost:3000](http://localhost:3000). Busque por **Paulista** para ver previsões fictícias ou por **Praça da Sé** para conferir o estado sem chegadas. A página identifica a simulação e usa uma lista de favoritos própria. Rode `npm test` para testar validação de entrada, autenticação, cookies, renovação de sessão e cálculo de chegada.
-
-## Como o código funciona
-
-| Arquivo | Responsabilidade |
+| Informação | Dados |
 | --- | --- |
-| `public/index.html` e `public/style.css` | Interface em português, layout responsivo, campos rotulados e controles por teclado |
-| `public/app.js` | Busca, seleção do ponto, estados da interface, favoritos e atualização periódica |
-| `public/previsoes.js` | Converte a resposta da SPTrans em uma lista ordenada por tempo de chegada |
-| `api/olho-vivo.js` | Função da Vercel que recebe as consultas do navegador |
-| `lib/request.js` e `lib/olho-vivo.js` | Validam os parâmetros, autenticam na SPTrans e encaminham as consultas |
-| `scripts/dev.js` | Servidor local e dados fictícios para a simulação |
-| `test/project.test.js` | Testes automatizados com respostas controladas |
+| Aluno | Matheus Costa Cutrim |
+| RM | 568087 |
+| Turma | 2CCPR |
+| Professor | Rodrigo Moraes |
+| Disciplina | Application Development |
 
-1. O navegador chama `/api/olho-vivo` no domínio do app.
-2. O servidor autentica via `POST /Login/Autenticar`, guarda os cookies da sessão na instância e os envia às consultas seguintes. Se a sessão retornar 401 ou 403, autentica novamente e repete a consulta uma vez.
-3. O proxy chama `GET /Parada/Buscar` para localizar pontos ou `GET /Previsao/Parada` para consultar chegadas pelo código do ponto.
-4. O JavaScript reúne os veículos das linhas e ordena pela diferença entre o horário previsto e o horário de referência da SPTrans. Por exemplo, de 23:58 até 00:05 são sete minutos. O app mostra a hora prevista e o horário de referência da consulta.
+A descrição da contribuição está no arquivo [PARTICIPANTES.txt](PARTICIPANTES.txt).
 
-Dados e previsões fornecidos pela [SPTrans · API Olho Vivo](https://www.sptrans.com.br/desenvolvedores/api-do-olho-vivo-guia-de-referencia/documentacao-api).
+## Acesso ao projeto
 
-## Publicar e entregar
+- [Aplicativo publicado na Vercel](https://ponto-certo-sp.vercel.app/)
+- [Repositório no GitHub](https://github.com/matheus-ccutrim-cs/ponto-certo-sp)
 
-1. Extraia o ZIP. No GitHub, crie um repositório, por exemplo `ponto-certo-sp`. Envie **o conteúdo** da pasta `ponto-certo` de modo que `README.md`, `PARTICIPANTES.txt` e `vercel.json` fiquem na raiz. Se usar a interface do GitHub, lembre-se de incluir `.gitignore` e `.env.example`. Mantenha `.env` apenas no computador.
-2. Entre na [Vercel](https://vercel.com/) com o GitHub. Abra **Add New → Project**, escolha o repositório e clique em **Import**.
-3. Use **Other** como Framework Preset e a raiz do repositório como Root Directory. A configuração do projeto serve `public/` como arquivos estáticos e `api/` como função Node.js.
-4. Em **Environment Variables**, adicione `SPTRANS_TOKEN` com o valor ativo no ambiente **Production** e clique em **Deploy**. Se configurar a variável depois do primeiro deploy, faça um novo deploy.
-5. Abra a URL pública em janela anônima. Busque **Paulista**, selecione um ponto e confira se aparecem previsões reais. Se um ponto estiver sem chegadas, experimente outro ponto ativo. Teste também no celular e confirme que o repositório está acessível para o professor.
-6. Envie à FIAP **a URL do repositório GitHub e a URL pública da Vercel**. O README e o arquivo de contribuições já fazem parte do projeto.
+## Visão geral
 
-## Critérios de avaliação
+Quem utiliza ônibus precisa de informações sobre as próximas chegadas para organizar seus deslocamentos e reduzir a incerteza durante a espera.
 
-| Critério | Como conferir |
+O Ponto Certo SP reúne essas informações em uma interface que permite buscar pontos por nome ou endereço, selecionar o local desejado e consultar os veículos previstos para chegar até ele.
+
+O painel apresenta a identificação da linha, o destino, o horário previsto e o tempo estimado de espera. Também permite filtrar veículos acessíveis e salvar pontos consultados com frequência.
+
+A solução se relaciona ao tema **Citizen Intelligence & Predictive Analytics** ao transformar dados públicos de mobilidade e previsões fornecidas pela SPTrans em informações que apoiam decisões cotidianas dos passageiros.
+
+## Objetivos
+
+### Objetivo geral
+
+Facilitar o planejamento de deslocamentos por ônibus em São Paulo por meio do acesso às previsões de chegada da API Olho Vivo.
+
+### Objetivos específicos
+
+- Permitir a localização de pontos por nome ou endereço.
+- Apresentar as próximas chegadas em ordem crescente de espera.
+- Informar a linha e o destino de cada veículo previsto.
+- Destacar a indicação de acessibilidade dos veículos.
+- Permitir o armazenamento de pontos favoritos no navegador.
+- Atualizar as previsões automaticamente e por solicitação do usuário.
+- Disponibilizar uma interface responsiva para celulares e computadores.
+- Utilizar dados públicos com identificação da fonte.
+
+## Público beneficiado
+
+O aplicativo atende passageiros de ônibus municipais de São Paulo, especialmente pessoas que consultam os mesmos pontos diariamente e usuários que precisam identificar veículos acessíveis.
+
+As informações ajudam o passageiro a avaliar a espera prevista em um ponto e acompanhar as linhas que atendem ao local.
+
+## Funcionalidades
+
+| Funcionalidade | Descrição |
 | --- | --- |
-| Aplicação rodando com dados reais (3 pts) | Abra o deploy público e consulte um ponto usando o token ativo |
-| Qualidade do código (3 pts) | Confira a divisão de responsabilidades acima e execute `npm test` |
-| Usabilidade e responsividade (2 pts) | Faça uma busca no celular, use o filtro e navegue pelos controles com Tab |
-| Utilidade (2 pts) | Identifique o próximo veículo de um ponto e salve o local para consultar depois |
+| Busca de pontos | Consulta pontos pelo nome ou endereço informado. |
+| Identificação do ponto | Exibe nome, endereço e código para diferenciar os resultados. |
+| Previsões de chegada | Apresenta linha, destino, horário previsto e minutos de espera. |
+| Ordenação das previsões | Prioriza os veículos com menor tempo estimado de chegada. |
+| Filtro de acessibilidade | Exibe somente veículos indicados como acessíveis pela SPTrans. |
+| Pontos favoritos | Permite salvar e remover pontos no navegador. |
+| Atualização automática | Realiza novas consultas de previsão a cada 30 segundos enquanto o ponto está selecionado. |
+| Atualização manual | Disponibiliza o botão “Atualizar agora”. |
+| Estados da interface | Informa carregamento, ausência de resultados e falhas nas consultas. |
+| Layout responsivo | Adapta a apresentação ao espaço disponível na tela. |
+
+## Tecnologias utilizadas
+
+- **HTML5** para a estrutura das páginas.
+- **CSS3** para o layout, a apresentação visual e a responsividade.
+- **JavaScript com módulos ES** para a interação com o usuário e o processamento das previsões.
+- **Node.js 24** para o servidor local e a integração com a SPTrans.
+- **Vercel Functions** para executar a integração no ambiente publicado.
+- **localStorage** para armazenar os pontos favoritos no navegador.
+- **Node.js Test Runner** para os testes automatizados.
+- **Git e GitHub** para versionamento e disponibilização do código.
+
+O projeto utiliza recursos nativos do Node.js e dispensa a instalação de dependências npm.
+
+## Organização do projeto
+
+| Caminho | Responsabilidade |
+| --- | --- |
+| `public/index.html` | Estrutura da interface e controles de busca, favoritos e previsões. |
+| `public/style.css` | Estilos visuais e regras de responsividade. |
+| `public/app.js` | Busca, seleção de pontos, favoritos, filtro e atualização das previsões. |
+| `public/previsoes.js` | Conversão dos horários e ordenação das chegadas. |
+| `api/olho-vivo.js` | Entrada da função executada pela Vercel. |
+| `lib/olho-vivo.js` | Autenticação, gerenciamento dos cookies e consultas à SPTrans. |
+| `lib/request.js` | Validação das solicitações e tratamento das respostas da integração. |
+| `scripts/dev.js` | Servidor local e modo de demonstração. |
+| `test/project.test.js` | Testes automatizados dos principais comportamentos da integração. |
+| `.env.example` | Modelo de configuração da variável de ambiente. |
+| `.gitignore` | Regras de exclusão de arquivos locais do versionamento. |
+| `vercel.json` | Configuração de publicação. |
+| `PARTICIPANTES.txt` | Identificação e contribuição individual. |
+
+## Integração com a API Olho Vivo
+
+A integração utiliza os seguintes endpoints da SPTrans.
+
+| Método | Endpoint | Finalidade |
+| --- | --- | --- |
+| POST | `/Login/Autenticar?token=...` | Autenticar o aplicativo e obter os cookies de sessão. |
+| GET | `/Parada/Buscar?termosBusca=...` | Buscar pontos por nome ou endereço. |
+| GET | `/Previsao/Parada?codigoParada=...` | Consultar as previsões de chegada de um ponto. |
+
+### Fluxo de funcionamento
+
+1. O usuário informa um nome ou endereço na busca.
+2. O navegador envia uma solicitação ao endpoint `/api/olho-vivo` do aplicativo.
+3. O servidor autentica na SPTrans e utiliza os cookies de sessão para consultar os dados.
+4. A interface apresenta os pontos encontrados.
+5. Ao selecionar um ponto, o aplicativo consulta suas previsões.
+6. Os veículos são organizados pelo tempo previsto até a chegada.
+7. Novas consultas são realizadas automaticamente a cada 30 segundos.
+
+O token é lido pela aplicação no servidor por meio da variável `SPTRANS_TOKEN`.
+
+A sessão é reutilizada enquanto estiver disponível na instância do servidor. Caso uma consulta retorne HTTP 401 ou 403, a integração realiza uma nova autenticação e repete a consulta uma vez.
+
+### Cálculo do tempo de espera
+
+O tempo exibido é calculado pela diferença entre o horário previsto de chegada do veículo e o horário de referência informado pela SPTrans.
+
+O cálculo considera a virada do dia. Por exemplo, uma consulta com referência às 23h58 e chegada prevista para 00h05 resulta em sete minutos de espera.
+
+As previsões são produzidas pela SPTrans e podem mudar entre consultas.
+
+## Como executar localmente
+
+### Pré-requisitos
+
+- Node.js 24.
+- Git, caso o projeto seja obtido por clonagem.
+- Acesso à internet.
+- Token ativo da API Olho Vivo para consultar dados reais.
+
+### 1. Obter o código
+
+Clone o repositório e entre na pasta do projeto.
+
+```bash
+git clone https://github.com/matheus-ccutrim-cs/ponto-certo-sp.git
+cd ponto-certo-sp
+```
+
+Também é possível baixar o ZIP pelo GitHub, extraí-lo e abrir um terminal na pasta que contém o arquivo `package.json`.
+
+### 2. Configurar o token
+
+Na área de desenvolvedores da SPTrans, crie uma conta, acesse “Meus Aplicativos” e cadastre um aplicativo para obter a chave de acesso.
+
+Copie o arquivo `.env.example` para `.env`.
+
+No Windows, pelo Prompt de Comando ou PowerShell, execute:
+
+```bat
+copy .env.example .env
+```
+
+No macOS ou Linux, execute:
+
+```bash
+cp .env.example .env
+```
+
+Abra o arquivo `.env` e preencha a variável com o token ativo.
+
+```dotenv
+SPTRANS_TOKEN=COLE_SEU_TOKEN_AQUI
+```
+
+Substitua `COLE_SEU_TOKEN_AQUI` pelo valor da chave, sem espaços ao redor.
+
+O `.env` está incluído nas regras do `.gitignore`. Mantenha o token privado e utilize `.env.example` como modelo compartilhável.
+
+### 3. Iniciar o aplicativo
+
+```bash
+npm start
+```
+
+No PowerShell do Windows, se houver bloqueio da execução de `npm.ps1`, utilize:
+
+```bat
+npm.cmd start
+```
+
+Acesse o aplicativo no navegador.
+
+[http://localhost:3000](http://localhost:3000)
+
+Para encerrar o servidor, pressione `Ctrl+C` no terminal.
+
+## Como utilizar
+
+1. Digite o nome ou endereço do ponto, como “Paulista”.
+2. Clique em **Buscar pontos**.
+3. Confira o endereço e o código dos resultados.
+4. Selecione o ponto desejado.
+5. Consulte a linha, o destino, o horário previsto e os minutos de espera.
+6. Marque **Só veículos acessíveis** para aplicar o filtro.
+7. Clique em **Salvar ponto** para adicioná-lo aos favoritos.
+8. Utilize **Atualizar agora** para solicitar uma nova consulta.
+
+Os favoritos ficam armazenados no navegador utilizado. Ao voltar ao aplicativo nesse navegador, os pontos salvos podem ser selecionados novamente.
+
+## Modo de demonstração
+
+Para conhecer a interface com dados fictícios, execute:
+
+```bash
+npm run demo
+```
+
+No PowerShell do Windows, também é possível utilizar:
+
+```bat
+npm.cmd run demo
+```
+
+Abra [http://localhost:3000](http://localhost:3000).
+
+Nesse modo, a página exibe a indicação de simulação.
+
+- Busque **Paulista** para visualizar pontos e previsões fictícias.
+- Busque **Praça da Sé** para visualizar um ponto sem chegadas previstas.
+- Teste o filtro de acessibilidade e o armazenamento dos favoritos.
+
+O modo de demonstração utiliza uma lista própria de favoritos. Para consultar a SPTrans, encerre o servidor de demonstração e execute `npm start` com o token configurado.
+
+## Testes automatizados
+
+Execute na pasta do projeto:
+
+```bash
+npm test
+```
+
+No PowerShell do Windows, também é possível utilizar:
+
+```bat
+npm.cmd test
+```
+
+Os testes verificam os seguintes comportamentos.
+
+- Validação dos parâmetros recebidos.
+- Resposta quando a configuração do token está ausente.
+- Encaminhamento correto da busca.
+- Envio dos cookies de sessão à SPTrans.
+- Renovação da autenticação após expiração da sessão.
+- Ordenação dos veículos pelo tempo de chegada.
+- Cálculo de espera durante a virada do dia.
+- Preservação da indicação de acessibilidade.
+
+Os testes automatizados utilizam respostas controladas. A integração com dados reais pode ser conferida pela busca e seleção de um ponto no aplicativo.
+
+## Publicação na Vercel
+
+1. Envie o projeto para um repositório no GitHub.
+2. Acesse a Vercel e importe o repositório.
+3. Selecione **Other** como preset da aplicação.
+4. Use a raiz do repositório como **Root Directory**.
+5. Adicione a variável de ambiente `SPTRANS_TOKEN` com o token ativo, incluindo o ambiente **Production**.
+6. Realize o deploy.
+7. Abra a URL publicada e teste a busca e as previsões.
+
+O arquivo `vercel.json` define `public` como a pasta de saída. A integração com a SPTrans é executada pela função localizada em `api/olho-vivo.js`.
+
+Se a variável de ambiente for adicionada ou alterada depois da publicação, realize um novo deploy para aplicar a configuração.
+
+## Usabilidade e acessibilidade
+
+A interface utiliza campos com rótulos, botões com identificação textual, indicação do ponto selecionado e mensagens de status durante as consultas.
+
+Os controles podem ser acessados pelo teclado, com destaque visual de foco. O layout adapta a organização dos painéis para telas menores.
+
+A indicação “Veículo acessível” e o filtro correspondente utilizam o campo de acessibilidade retornado pela SPTrans.
+
+## Decisões de implementação
+
+- **Consulta por ponto** para concentrar as informações no local em que o passageiro pretende embarcar.
+- **Ordenação por chegada** para facilitar a identificação dos próximos veículos.
+- **Favoritos no navegador** para permitir consultas recorrentes sem exigir cadastro.
+- **Integração pelo servidor** para gerenciar a autenticação e os cookies da SPTrans.
+- **Separação de responsabilidades** para facilitar a leitura, a manutenção e a explicação do código.
+- **HTML, CSS e JavaScript** como base da interface, conforme a proposta da disciplina.
+
+## Fonte dos dados
+
+Os dados de pontos e as previsões de chegada são fornecidos pela **SPTrans**, por meio da **API Olho Vivo**.
+
+O crédito à fonte também aparece no rodapé do aplicativo.
+
+- [Área de desenvolvedores da SPTrans](https://www.sptrans.com.br/desenvolvedores/)
+- [Documentação da API Olho Vivo](https://www.sptrans.com.br/desenvolvedores/api-do-olho-vivo-guia-de-referencia/documentacao-api)
+
+## Autor
+
+**Matheus Costa Cutrim**  
+RM 568087 · Turma 2CCPR  
+FIAP · Ciência da Computação  
+Global Solution 2026.2 · Application Development
